@@ -7,9 +7,8 @@ var logger = require('morgan');
 
 var expressLayouts = require('express-ejs-layouts');
 
+const systemConfig = require('./configs/system');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -25,10 +24,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/items', require('./routes/items'));
+//local variable
+app.locals.systemConfig = systemConfig;
 
+//setup router
+app.use(`/${systemConfig.prefixAdmin}`, require('./routes/backend/index'));
+app.use('/', require('./routes/frontend/index'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -43,7 +44,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('pages/error', { pageTitle: 'Page Not Found!' });
 });
 
 module.exports = app;
