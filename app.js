@@ -7,7 +7,24 @@ var logger = require('morgan');
 
 var expressLayouts = require('express-ejs-layouts');
 
+const mongoose = require('mongoose');
+
 const systemConfig = require('./configs/system');
+
+
+
+//connect mongoDB
+mongoose.connect('mongodb://localhost:27017/training_nodejs', {useNewUrlParser: true, useUnifiedTopology: true});
+const db = mongoose.connection;
+db.on('error',function() {
+  console.log( 'connection error')
+});
+db.once('open', function() {
+  // we're connected!
+  console.log( 'connected');
+});
+
+
 
 
 var app = express();
